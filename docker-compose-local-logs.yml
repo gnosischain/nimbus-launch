@@ -1,0 +1,74 @@
+version: '3.8'
+services:
+  node:
+    image: ghcr.io/gnosischain/gbc-nimbus:v1.7.0-gbc
+    user: root
+    hostname: node
+    restart: always
+    command: |
+      --network=gnosis-chain
+      --web3-url=$XDAI_RPC_URL
+      --log-level=$LOG_LEVEL
+      --data-dir=/home/.eth2/beaconchaindata
+      --validators-dir=/root/sbc/validators/validators
+      --secrets-dir=/root/sbc/validators/secrets
+      --non-interactive
+      --metrics
+      --metrics-address=0.0.0.0
+      --rest
+      --rest-address=0.0.0.0
+      --rest-allow-origin=*
+      --doppelganger-detection
+      --nat=extip:$PUBLIC_IP
+      --max-peers=$TARGET_PEERS
+      --graffiti=$GRAFFITI
+      --tcp-port=13000
+      --udp-port=12000
+    ports:
+      - '12000:12000/udp'
+      - '13000:13000'
+    volumes:
+      - ./node_db:/home/.eth2/beaconchaindata
+      - ./validators:/root/sbc/validators
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "1"
+  validator-import:
+    image: ghcr.io/gnosischain/gbc-nimbus:v1.7.0-gbc
+    user: root
+    command: |
+      deposits import /root/sbc/keys
+      --data-dir=/root/sbc/validators
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./keys:/root/sbc/keys
+      - ./validators:/root/sbc/validators
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    depends_on:
+      - node
+    command: |
+      --web.listen-address=0.0.0.0:9090
+      --config.file=/etc/prometheus/prometheus.yml
+      --storage.tsdb.path=/prometheus
+      --web.console.libraries=/usr/share/prometheus/console_libraries
+      --web.console.templates=/usr/share/prometheus/consoles
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+      - type: bind
+        source: ./prometheus/scrape-targets
+        target: /prometheus/targets
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "1"
+volumes:
+  prometheus-data:

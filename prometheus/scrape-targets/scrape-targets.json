@@ -1,0 +1,10 @@
+[
+  {
+    "labels": {
+      "job": "nodes"
+    },
+    "targets": [
+      "node:8008"
+    ]
+  }
+]
