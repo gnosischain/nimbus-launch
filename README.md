@@ -31,7 +31,13 @@ If it is required to send the node and validator logs to a remote syslog server 
 ## Import of validator keys
 1) Run the following command to import and all added keystore files, you will be prompted to enter keystore password you have used during key generation:
 ```bash
-docker-compose -f docker-compose-local-logs.yml run validator-import
+docker-compose run validator-import
+```
+
+## Pre-sync from trusted source 
+1) Nimbus can be configured to start from the finalized state obtained from the trusted source. This allows to start validating almost immediately. Trusted sync can be executed before running the node for the first time:
+```bash
+docker-compose up trusted-sync
 ```
 
 ## Running node

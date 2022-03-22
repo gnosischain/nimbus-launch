@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   node:
-    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.0-gbc
+    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
     user: root
     hostname: node
     restart: always
@@ -21,12 +21,13 @@ services:
       --doppelganger-detection
       --nat=extip:$PUBLIC_IP
       --max-peers=$TARGET_PEERS
-      --graffiti=$GRAFFITI
+      --graffiti=${OVERRIDE_GRAFFITI:-Nimbus/v22.3.1-e009728}
       --tcp-port=13000
       --udp-port=12000
     ports:
       - '12000:12000/udp'
       - '13000:13000'
+      - '127.0.0.1:5052:5052'
     volumes:
       - ./node_db:/home/.eth2/beaconchaindata
       - ./validators/validators:/root/sbc/validators/validators
@@ -36,8 +37,30 @@ services:
       options:
         max-size: "100m"
         max-file: "1"
+  trusted-sync:
+    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    user: root
+    command: |
+      trustedNodeSync
+      --network=gnosis-chain
+      --web3-url=$XDAI_RPC_URL
+      --log-level=$LOG_LEVEL
+      --data-dir=/home/.eth2/beaconchaindata
+      --non-interactive
+      --backfill=false
+      --trusted-node-url=$GBC_RPC_URL
+    ports:
+      - '12000:12000/udp'
+      - '13000:13000'
+    volumes:
+      - ./node_db:/home/.eth2/beaconchaindata
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "1"
   validator-import:
-    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.0-gbc
+    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
     user: root
     command: |
       deposits import /root/sbc/keys
