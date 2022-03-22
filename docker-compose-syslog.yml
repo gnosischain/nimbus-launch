@@ -31,10 +31,8 @@ services:
       - ./node_db:/home/.eth2/beaconchaindata
       - ./validators:/root/sbc/validators
     logging:
-      driver: "json-file"
-      options:
-        max-size: "100m"
-        max-file: "1"
+      driver: syslog
+      options: { tag: '{{.Name}}/{{.ID}}' }
   validator-import:
     image: ghcr.io/gnosischain/gbc-nimbus:v22.3.0-gbc
     user: root
