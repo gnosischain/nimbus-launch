@@ -29,7 +29,8 @@ services:
       - '13000:13000'
     volumes:
       - ./node_db:/home/.eth2/beaconchaindata
-      - ./validators:/root/sbc/validators
+      - ./validators/validators:/root/sbc/validators/validators
+      - ./validators/secrets:/root/sbc/validators/secrets
     logging:
       driver: "json-file"
       options:
@@ -45,7 +46,8 @@ services:
     stdin_open: true
     volumes:
       - ./keys:/root/sbc/keys
-      - ./validators:/root/sbc/validators
+      - ./validators/validators:/root/sbc/validators/validators
+      - ./validators/secrets:/root/sbc/validators/secrets
   prometheus:
     image: prom/prometheus:latest
     restart: always
