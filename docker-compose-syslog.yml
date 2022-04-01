@@ -69,6 +69,29 @@ services:
       - ./keys:/root/sbc/keys
       - ./validators/validators:/root/sbc/validators/validators
       - ./validators/secrets:/root/sbc/validators/secrets
+  validator-import-slashing-protection:
+    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    user: root
+    command: |
+      slashingdb import /root/sbc/config/slashing_protection.json
+      --validators-dir=/root/sbc/validators/validators
+    volumes:
+      - ./config:/root/sbc/config
+      - ./validators/validators:/root/sbc/validators/validators
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "1"
+  validator-export-slashing-protection:
+    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    user: root
+    command: |
+      slashingdb export /root/sbc/config/slashing_protection.json
+      --validators-dir=/root/sbc/validators/validators
+    volumes:
+      - ./config:/root/sbc/config
+      - ./validators/validators:/root/sbc/validators/validators
   prometheus:
     image: prom/prometheus:latest
     restart: always
