@@ -53,3 +53,12 @@ docker-compose logs -f node
 ```bash
 docker-compose up -d prometheus
 ```
+
+## Update repository to a newer version
+Update repository configs to a newer version should be as easy as pulling new changes from the repo and restarting the node.
+For example, the following sequence of commands should work in most of the cases.
+```bash
+git pull
+docker-compose down --remove-orphans
+docker-compose up -d node prometheus
+```
