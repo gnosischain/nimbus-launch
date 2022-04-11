@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   node:
-    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    image: ghcr.io/gnosischain/gbc-nimbus:bump-unstable
     user: root
     hostname: node
     restart: always
@@ -21,7 +21,7 @@ services:
       --doppelganger-detection
       --nat=extip:$PUBLIC_IP
       --max-peers=$TARGET_PEERS
-      --graffiti=${OVERRIDE_GRAFFITI:-Nimbus/v22.3.1-e009728}
+      --graffiti=${OVERRIDE_GRAFFITI:-Nimbus/v22.3.1-0304f7b}
       --tcp-port=13000
       --udp-port=12000
     ports:
@@ -38,7 +38,7 @@ services:
         max-size: "100m"
         max-file: "1"
   trusted-sync:
-    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    image: ghcr.io/gnosischain/gbc-nimbus:bump-unstable
     user: root
     command: |
       trustedNodeSync
@@ -60,7 +60,7 @@ services:
         max-size: "100m"
         max-file: "1"
   validator-import:
-    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    image: ghcr.io/gnosischain/gbc-nimbus:bump-unstable
     user: root
     command: |
       deposits import /root/sbc/keys
@@ -72,7 +72,7 @@ services:
       - ./validators/validators:/root/sbc/validators/validators
       - ./validators/secrets:/root/sbc/validators/secrets
   validator-import-slashing-protection:
-    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    image: ghcr.io/gnosischain/gbc-nimbus:bump-unstable
     user: root
     command: |
       slashingdb import /root/sbc/config/slashing_protection.json
@@ -86,7 +86,7 @@ services:
         max-size: "100m"
         max-file: "1"
   validator-export-slashing-protection:
-    image: ghcr.io/gnosischain/gbc-nimbus:v22.3.1-gbc-unstable
+    image: ghcr.io/gnosischain/gbc-nimbus:bump-unstable
     user: root
     command: |
       slashingdb export /root/sbc/config/slashing_protection.json
