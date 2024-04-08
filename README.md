@@ -1,3 +1,7 @@
+# DEPRECATED
+> [!WARNING]  
+> This is no longer supported as native Gnosis Chain support has been introduced. Please consider using the alternative setup path provided is [official documentation](https://docs.gnosischain.com/node/manual/beacon/nimbus).
+
 # Running a Nimbus client for GBC
 
 This document describes how to run Nimbus beacon node + Nimbus validator for the Gnosis Beacon Chain.
